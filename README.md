@@ -32,7 +32,7 @@ packet_project
 
 ## 編譯與執行
 ```bash
-cd packet_project/packet_parser
+cd packet_parser
 make && ./build/packet_parser
 ```
 
