@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include "tcp_parser.h"
 #include "udp_parser.h"
 #include "icmp_parser.h"
 
 int main(){
-
-    int protocol = 3;
+    
+    int protocol = 1;
     if(protocol == 1){
 
         uint8_t tcp_packet[20] = {

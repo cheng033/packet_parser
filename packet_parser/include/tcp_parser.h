@@ -4,6 +4,10 @@
 #include <stdint.h> 
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
     uint16_t source_port;
     uint16_t dest_port;
@@ -16,5 +20,9 @@ typedef struct {
 } tcp_header_t;
 
 int parser_tcp_packet(const uint8_t *packet, size_t len, tcp_header_t *h);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif    
