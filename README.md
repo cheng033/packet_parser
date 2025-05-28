@@ -1,6 +1,7 @@
 # Packet Parser
 
-一個用 C 語言實作的封包解析器，適合初學者練習 struct 設計、bitwise 操作, gdb debug 與 valgrind 檢查記憶體。
+packet_parser : 以c語言實作封包結構，可搭配 gdb 和 valgrind 檢查。<br>
+packer_server: 使用Crow框架建立api，呼叫c file且輸出到demo的html頁面。
 
 ## 功能
 - 解析模擬的封包 ex. TCP, UDP, ICMP
@@ -9,30 +10,36 @@
 ## 專案架構
 
 ```
-packet_project
+.
 ├── packet_parser
 │   ├── include
-│   │   ├── icmp_parser.h
 │   │   ├── tcp_parser.h
-│   │   └── udp_parser.h
+│   │   ├── udp_parser.h
+│   │   └── icmp_parser.h
 │   ├── Makefile
 │   └── src
-│       ├── icmp_parser.c
 │       ├── main.c
 │       ├── tcp_parser.c
-│       └── udp_parser.c
+│       ├── udp_parser.c
+│       └── icmp_parser.c
 ├── packet_server
 │   ├── include
 │   │   └── crow_all.h
 │   ├── Makefile
 │   └── src
 │       └── main.cpp
+├── frontend
+│       └── index.html
 └── README.md
 ```
 
-## 編譯與執行
+## 執行Demo
 ```bash
-cd packet_parser
-make && ./build/packet_parser
+cd packet_server
+make && ./build/packet_server
+cd frontend
+python3 -m http.server 8888
+//open web browser
+http://localhost:8888/index.html
 ```
 
