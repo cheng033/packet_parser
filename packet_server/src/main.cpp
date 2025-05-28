@@ -1,5 +1,4 @@
 #include "crow_all.h"
-#include <sstream>
 using namespace std;
 extern "C" {
 #include "../../packet_parser/include/tcp_parser.h"
@@ -9,8 +8,10 @@ extern "C" {
 
 int main(){
     crow::SimpleApp app;
-    //固定的tcp packet    
+    
+    //tcp packet    
     CROW_ROUTE(app, "/parse/tcp")([](){
+
         uint8_t tcp_packet[20] = {
             0x01, 0x02, //source
             0x00, 0x50, //dest
@@ -28,9 +29,8 @@ int main(){
     crow::json::wvalue res;
     if (ret < 0){
         res["error"] = "Packet parser failed!";
-        return res;
     }
-
+    
     res["source_port"] = h.source_port;
     res["dest_port"] = h.dest_port;
     res["seq_num"] =  h.seq_num;
@@ -39,12 +39,18 @@ int main(){
     res["window"] = h.window_size;
     res["checksum"] =  h.checksum;
     res["urgent_pointer"] = h.urgent_pointer;
-    return res;
+    
+    //CORS header
+    crow::response response(res.dump());
+    response.set_header("Access-Control-Allow-Origin", "*");
+    response.set_header("Content-Type", "application/json");
+    return response;
 });
 
 
     //UDP
     CROW_ROUTE(app, "/parse/udp")([]() {
+    
     uint8_t udp_packet[8] = {
         0x56, 0x33, // source_port
         0x83, 0xAE, // dest_port
@@ -57,19 +63,24 @@ int main(){
     crow::json::wvalue res;
     if (ret < 0) {
         res["error"] = "UDP parser failed!";
-        return res;
     }
     res["source_port"] = h.source_port;
     res["dest_port"] = h.dest_port;
     res["length"] = h.length;
     res["checksum"] = h.checksum;
-    return res;
+    
+    //CORS header
+    crow::response response(res.dump());
+    response.set_header("Access-Control-Allow-Origin", "*");
+    response.set_header("Content-Type", "application/json");
+    return response;
 });
 
 
 
     //ICMP
     CROW_ROUTE(app, "/parse/icmp")([](){
+        
         uint8_t icmp_packet[4]{
         0x12, //type
         0x44, //code
@@ -81,12 +92,16 @@ int main(){
     crow::json::wvalue res;
     if(ret < 0){
         res["error"] = "ICMP parser failed!";
-        return res;
     }
     res["type"] = h.type;
     res["code"] = h.code;
     res["checksum"] = h.checksum;
-    return res;
+    
+    //CORS header
+    crow::response response(res.dump());
+    response.set_header("Access-Control-Allow-Origin", "*");
+    response.set_header("Content-Type", "application/json");
+    return response;
 });
 
     //Others
