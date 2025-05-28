@@ -2,6 +2,9 @@
 #define UDP_PARSER_H
 #include <stdint.h>
 #include <stddef.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct{
     uint16_t source_port;
@@ -11,6 +14,10 @@ typedef struct{
 }udp_header_t;
 
 int parser_udp_packet(const uint8_t *packet, size_t len, udp_header_t *h);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

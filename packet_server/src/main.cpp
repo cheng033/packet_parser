@@ -3,6 +3,8 @@
 using namespace std;
 extern "C" {
 #include "../../packet_parser/include/tcp_parser.h"
+#include "../../packet_parser/include/udp_parser.h"
+#include "../../packet_parser/include/icmp_parser.h"
 }
 
 int main(){
@@ -22,21 +24,69 @@ int main(){
 
     tcp_header_t h = {0};
     int ret = parser_tcp_packet(tcp_packet, sizeof(tcp_packet), &h);
-
+    
+    crow::json::wvalue res;
     if (ret < 0){
-        return string("Packet parser failed!\n");
+        res["error"] = "Packet parser failed!";
+        return res;
     }
 
-    stringstream ss;
-    ss << "Source port:" << h.source_port << "\n";
-    ss << "Dest port: " << h.dest_port << "\n";
-    ss<< "Seq num: " << h.seq_num << "\n";
-    ss << "Ack num: " << h.ack_num << "\n";
-    ss << "Offset+Flag: 0x" << hex << h.offset_reserved_flags << "\n";
-    ss << "Window: " << dec << h.window_size << "\n";
-    ss << "Checksum: " << h.checksum << "\n";
-    ss << "Urgent pointer: " << h.urgent_pointer << "\n";
-    return ss.str();
+    res["source_port"] = h.source_port;
+    res["dest_port"] = h.dest_port;
+    res["seq_num"] =  h.seq_num;
+    res["ack_num"] = h.ack_num;
+    res["offset_flag"] = h.offset_reserved_flags;
+    res["window"] = h.window_size;
+    res["checksum"] =  h.checksum;
+    res["urgent_pointer"] = h.urgent_pointer;
+    return res;
+});
+
+
+    //UDP
+    CROW_ROUTE(app, "/parse/udp")([]() {
+    uint8_t udp_packet[8] = {
+        0x56, 0x33, // source_port
+        0x83, 0xAE, // dest_port
+        0x1F, 0x4D, // length
+        0x66, 0xBF  // checksum
+    };
+    udp_header_t h = {0};
+    int ret = parser_udp_packet(udp_packet, sizeof(udp_packet), &h);
+    
+    crow::json::wvalue res;
+    if (ret < 0) {
+        res["error"] = "UDP parser failed!";
+        return res;
+    }
+    res["source_port"] = h.source_port;
+    res["dest_port"] = h.dest_port;
+    res["length"] = h.length;
+    res["checksum"] = h.checksum;
+    return res;
+});
+
+
+
+    //ICMP
+    CROW_ROUTE(app, "/parse/icmp")([](){
+        uint8_t icmp_packet[4]{
+        0x12, //type
+        0x44, //code
+        0x6F, 0xEA //checksum
+    };
+    icmp_header_t h = {0};
+    int ret = parser_icmp_packet(icmp_packet,sizeof(icmp_packet), &h);
+
+    crow::json::wvalue res;
+    if(ret < 0){
+        res["error"] = "ICMP parser failed!";
+        return res;
+    }
+    res["type"] = h.type;
+    res["code"] = h.code;
+    res["checksum"] = h.checksum;
+    return res;
 });
 
     //Others
