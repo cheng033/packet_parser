@@ -2,4 +2,4 @@ packet_parser/build/
 packet_server/build/
 **/*.o
 *.bak
-
+packet_parser/packet_parser.mips
