@@ -6,7 +6,7 @@ packer_server: 使用Crow框架建立api，呼叫c file且輸出到demo的html�
 ## 功能
 - 解析模擬的封包 ex. TCP, UDP, ICMP
 - 檢查封包長度，防止記憶體越界
-
+- cross compile成mips file, 執行環境：MIPS Malta (QEMU)
 ## 專案架構
 
 ```
@@ -17,6 +17,7 @@ packer_server: 使用Crow框架建立api，呼叫c file且輸出到demo的html�
 │   │   ├── udp_parser.h
 │   │   └── icmp_parser.h
 │   ├── Makefile
+|   ├── packet_parser.mips
 │   └── src
 │       ├── main.c
 │       ├── tcp_parser.c
