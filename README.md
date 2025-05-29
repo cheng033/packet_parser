@@ -34,7 +34,7 @@ packer_server: 使用Crow框架建立api，呼叫c file且輸出到demo的html�
 └── README.md
 ```
 
-## 執行Demo
+## 執行網頁Demo
 ```bash
 cd packet_server
 make && ./build/packet_server
@@ -43,4 +43,22 @@ python3 -m http.server 8888
 //open web browser
 http://localhost:8888/index.html
 ```
-
+## 執行 MIPS
+### 1. QEMU + Openwrt image 安裝 
+### 2. Openwrt shell 設定ip
+```
+ifconfig br-lan down //如果bridge綁住lan要加
+ifconfig eth0 0.0.0.0
+udhcpc -i eth0
+```
+### 3. 原環境檔案傳輸
+```
+cd packet_parser
+python3 -m http.server 8888
+```
+### 4. Openwrt shell 執行
+```
+wget http://10.0.2.2:8888/packet_parser.mips
+chmod +x packet_parser.mips
+./packet_parser.mips
+```
